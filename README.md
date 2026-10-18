@@ -8,7 +8,12 @@ A static, dependency-free landing page for the **Growth & Acquisition Workshop**
 | --- | --- |
 | `index.html` | The page: copy, SEO and Open Graph metadata, and Event structured data (JSON-LD) |
 | `styles.css` | All styles, mobile first. The palette (black, white, yellow, magenta) comes from the workshop poster |
-| `main.js` | Scroll reveal and an analytics shim that works with any provider |
+| `main.js` | Scroll reveal, an analytics shim that works with any provider, and first-party visit logging for the backoffice |
+| `adminx/index.html` | The backoffice dashboard, served at `/adminx` |
+| `adminx/styles.css` | Dashboard styles (dark theme, same poster palette) |
+| `adminx/stats.js` | Pure aggregation helpers: KPIs, daily series, sources, events, demo data |
+| `adminx/adminx.js` | Dashboard UI: data resolution (API > this browser > demo) and rendering |
+| `adminx/config.js` | Optional `analyticsEndpoint` for a server-side collector |
 | `assets/amos-feranmi.{webp,jpg}` | Instructor portrait, cropped from the official poster |
 | `assets/og-image.jpg` | 1200×630 social sharing image made from the official poster |
 | `assets/favicon.svg` | Favicon |
@@ -19,7 +24,8 @@ The page is served at the site root (`/`).
 
 ```sh
 python3 -m http.server 8000
-# open http://localhost:8000
+# open http://localhost:8000          → the landing page
+# open http://localhost:8000/adminx/  → the backoffice dashboard
 ```
 
 ## Deploy
@@ -53,3 +59,21 @@ No analytics provider is installed. `main.js` sends events to whichever of these
 | `registration_click` | Any click through to amos.selar.com | `location`, `ticket` (`standard`, `growth_intensive`, `unspecified`) |
 
 To turn tracking on, paste your provider's snippet into `<head>` in `index.html`. The events above start flowing without further changes.
+
+## Backoffice (/adminx)
+
+`adminx/` is a static dashboard served at `/adminx` (locally: `http://localhost:8000/adminx/`). It shows overview KPIs — visits, distinct visitors, CTA clicks, registration clicks and conversion rate — plus visits per day, traffic sources and an event breakdown over a 7/14/30-day range.
+
+### Where the numbers come from
+
+`main.js` appends every landing-page visit and every tracked event to this origin's `localStorage` (`gaw_visits` and `gaw_events`, capped at 2,000 rows each); the dashboard reads the same keys. Traffic source is resolved in this order: UTM parameters (`utm_source` / `utm_medium` / `utm_campaign`), then the document referrer (classified as `organic`, `social` or `referral`), then `direct`. None of it leaves the browser.
+
+The badge at the top of the dashboard names the active data source:
+
+- **This browser** — real visits recorded in this browser on this origin. A static host has no backend, so visits from other browsers or devices are not counted.
+- **Demo data** — a deterministic sample set, shown only while this browser has no visits yet, so the dashboard is never an empty shell.
+- **Live API** — set `analyticsEndpoint` in `adminx/config.js` to a JSON endpoint returning `{ "visits": [...], "events": [...] }` (row shapes are documented in that file). The dashboard fetches it and falls back to the local data if it is unreachable.
+
+### Protection
+
+There is none, by choice: `/adminx` is an open path on the static site and is kept out of search engines with `noindex`. If the site goes public and the data matters, put the dashboard behind your host's access control or leave `adminx/` out of the deployed copy.

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Backoffice | Growth &amp; Acquisition Workshop</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b0b0b">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Oswald:wght@500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="config.js" defer></script>
+  <script src="stats.js" defer></script>
+  <script src="adminx.js" defer></script>
+</head>
+<body>
+  <header class="bar">
+    <a class="wordmark" href="../">
+      <span class="wordmark__mark" aria-hidden="true">G&amp;A</span>
+      <span class="wordmark__text">Backoffice</span>
+    </a>
+    <div class="bar__right">
+      <span class="badge badge--demo" id="mode-badge">Loading…</span>
+      <button class="btn" type="button" id="refresh">Refresh</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="toolbar">
+      <h1 class="title">Dashboard</h1>
+      <div class="range" role="group" aria-label="Date range">
+        <button type="button" data-days="7">7d</button>
+        <button type="button" data-days="14" class="is-active">14d</button>
+        <button type="button" data-days="30">30d</button>
+      </div>
+    </div>
+
+    <section class="kpis" aria-label="Key metrics">
+      <article class="card">
+        <p class="card__label">Visits</p>
+        <p class="card__value" id="k-visits">–</p>
+        <p class="card__sub" id="k-visits-sub">pageviews</p>
+      </article>
+      <article class="card">
+        <p class="card__label">Visitors</p>
+        <p class="card__value" id="k-visitors">–</p>
+        <p class="card__sub" id="k-visitors-sub">distinct visitors</p>
+      </article>
+      <article class="card">
+        <p class="card__label">CTA clicks</p>
+        <p class="card__value" id="k-cta">–</p>
+        <p class="card__sub" id="k-cta-sub">ticket buttons</p>
+      </article>
+      <article class="card card--accent">
+        <p class="card__label">Registrations</p>
+        <p class="card__value" id="k-reg">–</p>
+        <p class="card__sub" id="k-reg-sub">to amos.selar.com</p>
+      </article>
+      <article class="card card--accent">
+        <p class="card__label">Conversion</p>
+        <p class="card__value" id="k-conv">–</p>
+        <p class="card__sub" id="k-conv-sub">of visits</p>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel__head">
+        <h2>Visits per day</h2>
+        <span class="panel__meta" id="chart-meta"></span>
+      </div>
+      <div class="chart" id="chart" role="img" aria-label="Bar chart of visits per day"></div>
+    </section>
+
+    <div class="grid-2">
+      <section class="panel">
+        <div class="panel__head">
+          <h2>Traffic sources</h2>
+          <span class="panel__meta">source · type · visits · share</span>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th>Source</th><th>Type</th><th class="num">Visits</th><th class="num">Share</th></tr>
+            </thead>
+            <tbody id="src-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel__head">
+          <h2>Events</h2>
+          <span class="panel__meta">name · count · share</span>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th>Event</th><th class="num">Count</th><th class="num">Share</th></tr>
+            </thead>
+            <tbody id="evt-rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <p class="note" id="data-note">Loading…</p>
+  </main>
+
+  <footer class="foot">
+    <a href="../">← Back to the workshop site</a>
+    <span>Growth &amp; Acquisition Workshop</span>
+  </footer>
+</body>
+</html>
