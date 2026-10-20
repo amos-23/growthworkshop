@@ -702,3 +702,35 @@ a { color: inherit; }
 }
 
 .nowrap { white-space: nowrap; }
+
+
+/* ---------- Compact layout ---------- */
+.problem__inner { max-width: 820px; text-align: center; }
+.problem__inner .h2 { margin-bottom: 1rem; }
+.problem__inner .lead { margin: 0; color: var(--muted-light); }
+
+.learn .section-head { margin-bottom: 20px; }
+.learn__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line-dark); }
+.learn__list li { display: flex; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line-dark); }
+.learn__num { flex: none; width: 2ch; font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; color: var(--yellow); }
+.learn__list h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; text-transform: uppercase; }
+.learn__list p { margin: 2px 0 0; color: #d6d6d6; font-size: 0.95em; }
+.learn__goal h3 { color: var(--yellow); }
+
+.instructor__grid { grid-template-columns: 1fr; gap: 20px; }
+.instructor__photo { max-width: 180px; }
+.instructor__copy .h2 { font-size: clamp(1.8rem, 3vw + 0.6rem, 2.6rem); margin-bottom: 0.2rem; }
+.instructor__role { margin-bottom: 0.75rem; }
+.instructor__copy .kicker { margin-bottom: 0.6rem; }
+
+.final__title { font-size: clamp(2rem, 4vw + 0.6rem, 3.4rem); margin-bottom: 1rem; }
+.final__meta { margin-bottom: 1.25rem; }
+.tickets .section-head { margin-bottom: 28px; }
+.tickets__note { margin-top: 28px; }
+
+@media (min-width: 768px) {
+  .learn__list { grid-template-columns: 1fr 1fr; column-gap: 40px; }
+  .learn__list li:last-child { grid-column: 1 / -1; }
+  .instructor__grid { grid-template-columns: 200px 1fr; gap: 36px; }
+  .instructor__photo { max-width: 200px; }
+}
