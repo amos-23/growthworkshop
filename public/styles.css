@@ -736,3 +736,21 @@ a { color: inherit; }
   .instructor__grid { grid-template-columns: 200px 1fr; gap: 36px; }
   .instructor__photo { max-width: 200px; }
 }
+
+
+/* ---------- Brand logo strip ---------- */
+.brands { background: var(--paper); color: var(--ink); border-bottom: 1px solid var(--line-light); padding: 22px 0; }
+.brands__inner { display: grid; gap: 14px; justify-items: center; text-align: center; }
+.brands__label { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-light); }
+.brands__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px 40px; }
+.brands__list img { width: auto; max-width: none; height: 26px; display: block; filter: brightness(0); opacity: 0.72; }
+.brands__list li:nth-child(1) img { height: 32px; }
+.brands__list li:nth-child(2) img { height: 20px; }
+.brands__list li:nth-child(3) img { height: 22px; }
+.brands__combo img { height: 28px; }
+.brands__combo { display: inline-flex; align-items: center; gap: 8px; }
+.brands__combo span { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: 0.01em; color: var(--black); opacity: 0.72; line-height: 1; }
+@media (min-width: 768px) {
+  .brands__inner { grid-template-columns: auto 1fr; justify-items: start; text-align: left; gap: 32px; }
+  .brands__list { justify-content: flex-end; }
+}
