@@ -88,19 +88,22 @@
         <figure class="hero__portrait">
           <picture>
             <source srcset="assets/amos-feranmi.webp" type="image/webp">
-            <img src="assets/amos-feranmi.jpg" width="422" height="438" alt="Amos Feranmi, instructor of the Growth &amp; Acquisition Workshop" fetchpriority="high">
+            <img src="assets/amos-feranmi.jpg" width="422" height="438" alt="Amos Feranmi, host of the Growth &amp; Acquisition Workshop" fetchpriority="high">
           </picture>
-          <figcaption><strong>Amos Feranmi</strong><span>Your instructor</span></figcaption>
+          <figcaption><strong>Amos Feranmi</strong></figcaption>
         </figure>
       </div>
+      <a class="scroll-cue" href="#problem" aria-label="Scroll to the next section"><span>Scroll</span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
     </section>
 
     <!-- The problem -->
-    <section class="section section--light problem" aria-labelledby="problem-title">
-      <div class="container problem__inner reveal">
-        <p class="kicker">The problem</p>
-        <h2 class="h2" id="problem-title">Marketing activity isn't the same as business growth.</h2>
-        <p class="lead">If your marketing isn't bringing in customers and contributing to revenue, it's time to rethink your approach.</p>
+    <section class="section section--light problem problem--strip" id="problem" aria-labelledby="problem-title">
+      <div class="container problem__strip reveal">
+        <div class="problem__head">
+          <p class="kicker">The problem</p>
+          <h2 class="h2" id="problem-title">Marketing activity isn't the same as business growth.</h2>
+        </div>
+        <p class="lead">Posting, campaigns, new tools and rising traffic can all look like progress. If none of it is bringing in customers and contributing to revenue, it's time to rethink your approach.</p>
       </div>
     </section>
 
@@ -108,7 +111,7 @@
     <section class="section experience-sec" aria-labelledby="exp-title">
       <div class="container">
         <div class="section-head reveal">
-          <h2 class="h2" id="exp-title">Growth backed by experience</h2>
+          <h2 class="h2" id="exp-title">This comes from real growth work</h2>
         </div>
 
         <ul class="stats reveal">
@@ -119,9 +122,11 @@
         <p class="stats__link reveal">Want to see the work behind the numbers? <a href="https://amosferanmi.vercel.app/campaign" target="_blank" rel="noopener">Explore selected campaigns <span aria-hidden="true">→</span></a></p>
 
         <div class="brandwall reveal">
-          <p class="brandwall__lead">Different brands. Different industries. Different growth challenges.</p>
+          <p class="brandwall__lead">Different brands. Different industries. Different growth challenges. The same question every time: what is actually bringing in customers?</p>
           <h3 class="brandwall__title">Selected brands I've worked with</h3>
-          <ul class="brandwall__list">
+          <div class="marquee marquee--brands" aria-label="Selected brands">
+            <div class="marquee__track">
+              <ul class="marquee__list">
             <li><span class="chip"><img src="assets/logos/selar.png" alt="Selar" class="chip__logo chip__logo--selar"></span></li>
             <li><span class="chip"><span class="chip__word">Keble</span></span></li>
             <li><span class="chip"><span class="chip__word">Krestivo</span></span></li>
@@ -145,9 +150,41 @@
             <li><span class="chip"><span class="chip__word">Akam Chops</span></span></li>
             <li><span class="chip"><span class="chip__word">Paper</span></span></li>
             <li><span class="chip"><span class="chip__word">Pluglink</span></span></li>
-          </ul>
+              </ul>
+              <ul class="marquee__list" aria-hidden="true">
+            <li><span class="chip"><img src="assets/logos/selar.png" alt="Selar" class="chip__logo chip__logo--selar"></span></li>
+            <li><span class="chip"><span class="chip__word">Keble</span></span></li>
+            <li><span class="chip"><span class="chip__word">Krestivo</span></span></li>
+            <li><span class="chip"><span class="chip__word">Ceal Fashion</span></span></li>
+            <li><span class="chip"><span class="chip__word">Edstack</span></span></li>
+            <li><span class="chip"><span class="chip__word">Optimus AI</span></span></li>
+            <li><span class="chip"><span class="chip__word">Ziki AI</span></span></li>
+            <li><span class="chip"><img src="assets/logos/techeconomy.svg" alt="TechEconomy" class="chip__logo chip__logo--techeconomy"></span></li>
+            <li><span class="chip"><span class="chip__word">Bitoshi</span></span></li>
+            <li><span class="chip"><span class="chip__word">Payrit</span></span></li>
+            <li><span class="chip"><span class="chip__word">Pave</span></span></li>
+            <li><span class="chip"><span class="chip__word">LoadConnect</span></span></li>
+            <li><span class="chip"><span class="chip__word">BuyPower</span></span></li>
+            <li><span class="chip"><span class="chip__word">Chub</span></span></li>
+            <li><span class="chip"><span class="chip__word">Growth Skool</span></span></li>
+            <li><span class="chip"><span class="chip__word">Tech Summit Ogun</span></span></li>
+            <li><span class="chip"><img src="assets/logos/dialx.svg" alt="DialX" class="chip__logo chip__logo--dialx"></span></li>
+            <li><span class="chip"><img src="assets/logos/neighbourly.svg" alt="" class="chip__logo chip__logo--icon"><span class="chip__word">Neighbourly</span></span></li>
+            <li><span class="chip"><span class="chip__word">BAK Network</span></span></li>
+            <li><span class="chip"><span class="chip__word">Jubay Avenue</span></span></li>
+            <li><span class="chip"><span class="chip__word">Akam Chops</span></span></li>
+            <li><span class="chip"><span class="chip__word">Paper</span></span></li>
+            <li><span class="chip"><span class="chip__word">Pluglink</span></span></li>
+              </ul>
+            </div>
+          </div>
           <h3 class="brandwall__title brandwall__title--sub">Industries</h3>
-          <ul class="industries"><li>Fintech</li><li>Web3</li><li>AI</li><li>SaaS</li><li>Creator Economy</li><li>E-commerce</li><li>Marketplaces</li><li>Logistics</li><li>Education</li><li>Media</li><li>Fashion</li><li>Energy</li><li>Events</li><li>Communities</li><li>Government &amp; Politics</li></ul>
+          <div class="marquee marquee--industries marquee--reverse" aria-label="Industries">
+            <div class="marquee__track">
+              <ul class="marquee__list"><li class="bubble"><span>Fintech</span></li><li class="bubble"><span>Web3</span></li><li class="bubble"><span>AI</span></li><li class="bubble"><span>SaaS</span></li><li class="bubble"><span>Creator Economy</span></li><li class="bubble"><span>E-commerce</span></li><li class="bubble"><span>Marketplaces</span></li><li class="bubble"><span>Logistics</span></li><li class="bubble"><span>Education</span></li><li class="bubble"><span>Media</span></li><li class="bubble"><span>Fashion</span></li><li class="bubble"><span>Energy</span></li><li class="bubble"><span>Events</span></li><li class="bubble"><span>Communities</span></li><li class="bubble"><span>Government &amp; Politics</span></li></ul>
+              <ul class="marquee__list" aria-hidden="true"><li class="bubble"><span>Fintech</span></li><li class="bubble"><span>Web3</span></li><li class="bubble"><span>AI</span></li><li class="bubble"><span>SaaS</span></li><li class="bubble"><span>Creator Economy</span></li><li class="bubble"><span>E-commerce</span></li><li class="bubble"><span>Marketplaces</span></li><li class="bubble"><span>Logistics</span></li><li class="bubble"><span>Education</span></li><li class="bubble"><span>Media</span></li><li class="bubble"><span>Fashion</span></li><li class="bubble"><span>Energy</span></li><li class="bubble"><span>Events</span></li><li class="bubble"><span>Communities</span></li><li class="bubble"><span>Government &amp; Politics</span></li></ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -155,8 +192,13 @@
     <!-- What you'll gain -->
     <section class="section section--light gain" aria-labelledby="gain-title">
       <div class="container gain__inner reveal">
-        <h2 class="h2" id="gain-title">What you'll gain</h2>
-        <p class="lead">Learn to acquire customers, identify growth opportunities and use AI to make smarter marketing decisions.</p>
+        <h2 class="h2" id="gain-title">What you'll take away</h2>
+        <p class="lead">A clearer view of where growth is being held back, and a more deliberate way to fix it.</p>
+        <ul class="gain__list">
+          <li><span>01</span>Spot what's holding growth back</li>
+          <li><span>02</span>Find better ways to acquire customers</li>
+          <li><span>03</span>Use AI to make smarter marketing decisions</li>
+        </ul>
         <a class="btn btn--black btn--lg" href="https://amos.selar.com/gaw" data-track="cta" data-location="learn">Reserve your spot <span aria-hidden="true">→</span></a>
       </div>
     </section>
@@ -171,10 +213,10 @@
           </picture>
         </figure>
         <div class="instructor__copy">
-          <p class="kicker">Your instructor</p>
           <h2 class="h2" id="instructor-title">Meet Amos Feranmi</h2>
           <p>I'm a growth and customer acquisition practitioner with over six years of experience working across brands, industries and business stages.</p>
           <p>My work spans customer acquisition, growth campaigns and marketing initiatives designed to attract users and help businesses find opportunities to grow.</p>
+          <p>This workshop is how I approach that work, shared so you can apply it to your own business.</p>
           <p class="instructor__more"><a href="https://amosferanmi.vercel.app/" target="_blank" rel="noopener">Read more <span aria-hidden="true">→</span></a></p>
         </div>
       </div>
@@ -185,6 +227,7 @@
       <div class="container">
         <div class="section-head section-head--center reveal">
           <h2 class="h2" id="tickets-title">Choose your access</h2>
+          <p class="lead">Both tickets include the live workshop. Growth Intensive adds a private session with Amos on your own acquisition challenges.</p>
         </div>
 
         <div class="tickets__grid">
@@ -224,7 +267,7 @@
     <section class="section section--magenta final" aria-labelledby="final-title">
       <div class="container final__inner reveal">
         <h2 class="final__title" id="final-title">Make your marketing work harder.</h2>
-        <p class="lead">Build a more deliberate approach to customer acquisition, growth and revenue.</p>
+        <p class="lead">So your next campaign, channel or tool is a deliberate decision, not another guess.</p>
         <p class="final__meta">7 November 2026 · 12 PM WAT</p>
         <a class="btn btn--yellow btn--lg" href="https://amos.selar.com/gaw" data-track="cta" data-location="final">Register now <span aria-hidden="true">→</span></a>
         <p class="final__prices">Standard <strong>₦40,000</strong> · Growth Intensive <strong>₦100,000</strong></p>
