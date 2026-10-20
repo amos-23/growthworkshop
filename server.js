@@ -184,7 +184,7 @@ function requireAdmin(req, res, url) {
   return false;
 }
 
-function serveFile(res, root, relPath, extraHeaders) {
+function serveFile(req, res, root, relPath, extraHeaders) {
   const filePath = path.normalize(path.join(root, relPath));
   if (!filePath.startsWith(root + path.sep)) return send(res, 404, 'Not found');
   fs.stat(filePath, (err, stat) => {
@@ -192,14 +192,23 @@ function serveFile(res, root, relPath, extraHeaders) {
       return send(res, 404, 'Not found', { 'Content-Type': 'text/plain; charset=utf-8' });
     }
     const ext = path.extname(filePath).toLowerCase();
-    const isHtml = ext === '.html';
-    res.writeHead(200, Object.assign({
+    // Pages, styles and scripts are always revalidated so edits show up straight away;
+    // images can be cached for a day.
+    const revalidate = ['.html', '.css', '.js'].includes(ext) || root === ADMIN_DIR;
+    const etag = '"' + stat.size.toString(16) + '-' + Math.floor(stat.mtimeMs).toString(16) + '"';
+    const headers = Object.assign({
       'Content-Type': MIME[ext] || 'application/octet-stream',
-      'Content-Length': stat.size,
-      'Cache-Control': isHtml || root === ADMIN_DIR ? 'no-cache' : 'public, max-age=86400',
+      'Cache-Control': revalidate ? 'no-cache' : 'public, max-age=86400',
+      ETag: etag,
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'strict-origin-when-cross-origin'
-    }, extraHeaders));
+    }, extraHeaders);
+    if (req.headers['if-none-match'] === etag) {
+      res.writeHead(304, headers);
+      return res.end();
+    }
+    headers['Content-Length'] = stat.size;
+    res.writeHead(200, headers);
     fs.createReadStream(filePath).pipe(res);
   });
 }
@@ -332,11 +341,11 @@ const server = http.createServer(async (req, res) => {
       }
       if (pathname === '/admin') return send(res, 301, '', { Location: '/admin/' });
       const rel = pathname === '/admin/' ? 'index.html' : pathname.slice('/admin/'.length);
-      return serveFile(res, ADMIN_DIR, rel, { 'X-Robots-Tag': 'noindex, nofollow' });
+      return serveFile(req, res, ADMIN_DIR, rel, { 'X-Robots-Tag': 'noindex, nofollow' });
     }
 
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed');
-    return serveFile(res, PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
+    return serveFile(req, res, PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
   } catch (err) {
     console.error(err);
     if (!res.headersSent) send(res, 500, 'Server error');

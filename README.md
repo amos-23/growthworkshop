@@ -34,7 +34,7 @@ The sharing image URLs in `public/index.html` (`og:image`, `twitter:image`) shou
 
 Every purchase CTA links to the verified registration page: `https://amos.selar.com/gaw`.
 
-The Selar product sells both tickets on that one page, so there is no separate URL for each ticket. Visitors choose their ticket at checkout. Selar currently names the tickets **Standard** and **Premium**, and the page explains that Growth Intensive is listed as Premium. If you rename the Selar ticket to "Growth Intensive", delete that sentence from the `.tickets__note` paragraph in `index.html`.
+The Selar product sells both tickets on that one page, so there is no separate URL for each ticket. Visitors choose their ticket at checkout. Selar currently names the tickets **Standard** and **Premium**. The page no longer mentions this, so consider renaming the Selar ticket to "Growth Intensive" to match.
 
 ## Analytics and the admin dashboard
 

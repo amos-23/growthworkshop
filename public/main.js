@@ -33,7 +33,7 @@
   };
 
   function sendFirstParty(name, props) {
-    if (navigator.webdriver || !/^https?:$/.test(window.location.protocol)) return;
+    if (window.GAW_NO_TRACK || navigator.webdriver || !/^https?:$/.test(window.location.protocol)) return;
     var payload = JSON.stringify(Object.assign({ event: name }, context, props));
     // sendBeacon survives the page unloading as the visitor leaves for registration.
     if (navigator.sendBeacon && navigator.sendBeacon(TRACK_URL, new Blob([payload], { type: 'application/json' }))) return;
