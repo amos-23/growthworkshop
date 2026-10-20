@@ -1,16 +1,51 @@
 // Growth & Acquisition Workshop landing page behaviour.
-// No analytics provider is bundled. track() forwards events to whichever of
-// Google Tag Manager (dataLayer), GA4 (gtag), Plausible or Meta Pixel is
-// installed on the page, and does nothing otherwise.
+// track() records each event with the site's own /api/track endpoint (shown
+// on the /admin dashboard) and also forwards it to Google Tag Manager
+// (dataLayer), GA4 (gtag), Plausible or Meta Pixel if any is installed.
 
 (function () {
   'use strict';
 
   var REGISTRATION_HOST = 'amos.selar.com';
+  var TRACK_URL = '/api/track';
+
+  // A random per-tab session id, used only to count unique visitors.
+  function sessionId() {
+    try {
+      var id = sessionStorage.getItem('gaw_sid');
+      if (!id) {
+        id = Math.random().toString(36).slice(2) + Date.now().toString(36);
+        sessionStorage.setItem('gaw_sid', id);
+      }
+      return id;
+    } catch (err) {
+      return undefined;
+    }
+  }
+
+  var params = new URLSearchParams(window.location.search);
+  var context = {
+    sid: sessionId(),
+    ref: document.referrer || undefined,
+    utm_source: params.get('utm_source') || undefined,
+    utm_medium: params.get('utm_medium') || undefined,
+    utm_campaign: params.get('utm_campaign') || undefined
+  };
+
+  function sendFirstParty(name, props) {
+    if (navigator.webdriver || !/^https?:$/.test(window.location.protocol)) return;
+    var payload = JSON.stringify(Object.assign({ event: name }, context, props));
+    // sendBeacon survives the page unloading as the visitor leaves for registration.
+    if (navigator.sendBeacon && navigator.sendBeacon(TRACK_URL, new Blob([payload], { type: 'application/json' }))) return;
+    if (window.fetch) {
+      fetch(TRACK_URL, { method: 'POST', body: payload, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(function () {});
+    }
+  }
 
   function track(name, props) {
     props = props || {};
     try {
+      sendFirstParty(name, props);
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push(Object.assign({ event: name }, props));
       if (typeof window.gtag === 'function') window.gtag('event', name, props);
