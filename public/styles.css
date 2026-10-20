@@ -738,19 +738,76 @@ a { color: inherit; }
 }
 
 
-/* ---------- Brand logo strip ---------- */
-.brands { background: var(--paper); color: var(--ink); border-bottom: 1px solid var(--line-light); padding: 22px 0; }
-.brands__inner { display: grid; gap: 14px; justify-items: center; text-align: center; }
-.brands__label { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-light); }
-.brands__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px 40px; }
-.brands__list img { width: auto; max-width: none; height: 26px; display: block; filter: brightness(0); opacity: 0.72; }
-.brands__list li:nth-child(1) img { height: 32px; }
-.brands__list li:nth-child(2) img { height: 20px; }
-.brands__list li:nth-child(3) img { height: 22px; }
-.brands__combo img { height: 28px; }
-.brands__combo { display: inline-flex; align-items: center; gap: 8px; }
-.brands__combo span { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: 0.01em; color: var(--black); opacity: 0.72; line-height: 1; }
+/* ---------- Experience: stats and brand wall ---------- */
+.experience-sec { background: var(--black); }
+.stats { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 12px; }
+.stat { padding: 20px; background: var(--ink); border: 1px solid var(--line-dark); border-top: 4px solid var(--yellow); }
+.stat strong { display: block; font-family: var(--font-display); font-weight: 700; font-size: clamp(2.4rem, 3.6vw + 1rem, 3.4rem); line-height: 1; color: var(--yellow); }
+.stat span { display: block; margin-top: 6px; color: #d6d6d6; }
+.stats__link { margin: 0 0 clamp(28px, 4vw, 44px); color: var(--muted-dark); }
+.stats__link a { color: var(--white); font-weight: 600; text-underline-offset: 4px; }
+.stats__link a:hover { color: var(--yellow); }
+
+.brandwall__lead { margin: 0 0 18px; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.2rem, 1.6vw + 0.7rem, 1.6rem); line-height: 1.2; text-transform: uppercase; color: var(--white); }
+.brandwall__title { margin: 0 0 12px; font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--yellow); }
+.brandwall__title--sub { margin-top: 28px; }
+.brandwall__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.chip {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding: 0 10px;
+  background: var(--white); color: var(--black);
+  border: 2px solid var(--white); border-radius: var(--radius);
+  text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.chip:hover { transform: translateY(-2px); border-color: var(--yellow); }
+.chip__word { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; letter-spacing: 0.02em; text-transform: uppercase; text-align: center; line-height: 1.1; }
+.chip__logo { width: auto; max-width: 100%; height: 22px; filter: brightness(0); opacity: 0.85; }
+.chip__logo--selar { height: 28px; }
+.chip__logo--dialx { height: 16px; }
+.chip__logo--techeconomy { height: 18px; }
+.chip__logo--icon { height: 24px; }
+.industries { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.industries li { padding: 6px 12px; border: 1px solid var(--line-dark); border-radius: 999px; font-size: 0.9rem; color: #e6e6e6; }
+
+/* ---------- What you'll gain ---------- */
+.gain__inner { max-width: 760px; text-align: center; }
+.gain__inner .h2 { margin-bottom: 0.75rem; }
+.gain__inner .lead { margin: 0 0 1.5rem; color: var(--muted-light); }
+
+/* ---------- Instructor extras ---------- */
+.instructor__more { margin: 0.5rem 0 0; font-weight: 700; }
+.instructor__more a { text-underline-offset: 4px; }
+.instructor__copy .h2 { text-transform: none; }
+
+/* ---------- Tickets (simplified) ---------- */
+.ticket .btn { margin-top: auto; }
+.ticket__desc { margin-bottom: 24px; }
+
+/* ---------- FAQ ---------- */
+.faq__inner { max-width: 820px; }
+.faq .h2 { margin-bottom: 20px; }
+.faq__list { display: grid; gap: 10px; }
+.faq details { background: var(--white); border: 2px solid var(--black); }
+.faq details summary { list-style: none; cursor: pointer; position: relative; padding: 14px 48px 14px 16px; font-weight: 700; }
+.faq details summary::-webkit-details-marker { display: none; }
+.faq details summary::after { content: "+"; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-family: var(--font-display); font-size: 1.5rem; line-height: 1; }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { margin: 0; padding: 0 16px 16px; color: var(--muted-light); }
+.final__prices { margin: 18px 0 0; font-size: 0.95rem; }
+.final__prices strong { color: var(--yellow); }
+.hero__prices { margin: 18px 0 0; font-size: 0.98rem; color: #d6d6d6; }
+.hero__prices a { text-decoration: none; border-bottom: 1px solid var(--line-dark); padding-bottom: 2px; }
+.hero__prices a:hover { border-bottom-color: var(--yellow); }
+.hero__prices strong { color: var(--yellow); }
+
+@media (min-width: 560px) {
+  .brandwall__list { grid-template-columns: repeat(3, 1fr); }
+}
 @media (min-width: 768px) {
-  .brands__inner { grid-template-columns: auto 1fr; justify-items: start; text-align: left; gap: 32px; }
-  .brands__list { justify-content: flex-end; }
+  .stats { grid-template-columns: repeat(3, 1fr); }
+  .brandwall__list { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 960px) {
+  .brandwall__list { grid-template-columns: repeat(6, 1fr); }
 }
