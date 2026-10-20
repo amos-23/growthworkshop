@@ -1064,3 +1064,12 @@ body { font-size: clamp(14.5px, 0.25vw + 13.2px, 16px); line-height: 1.7; }
   .problem__strip { grid-template-columns: 1.15fr 1fr; gap: 56px; }
   .problem--strip .lead { padding-left: 28px; border-left: 2px solid var(--magenta); }
 }
+
+
+/* Revised copy flow: three takeaways under "What you'll take away" */
+.gain__inner { max-width: 760px; }
+.gain__list { list-style: none; margin: 0 0 1.6rem; padding: 0; display: grid; gap: 10px; text-align: left; }
+.gain__list li { display: flex; gap: 14px; align-items: baseline; padding: 14px 16px; border: 1px solid var(--line-light); background: var(--white); font-weight: 600; }
+.gain__list span { font-family: var(--font-display); font-weight: 700; color: var(--magenta-deep); }
+@media (min-width: 720px) { .gain__list { grid-template-columns: repeat(3, 1fr); } .gain__list li { flex-direction: column; gap: 6px; } }
+.tickets .section-head .lead { color: #bdbdb8; margin: 0.4rem auto 0; max-width: 34em; }
