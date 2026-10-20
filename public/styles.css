@@ -1040,3 +1040,27 @@ body { font-size: clamp(14.5px, 0.25vw + 13.2px, 16px); line-height: 1.7; }
 .tickets .ticket:not(.ticket--featured) { background: var(--black); }
 .hero__portrait figcaption { flex-wrap: wrap; row-gap: 2px; }
 @media (max-height: 720px) and (min-width: 960px) { .hero__portrait { max-width: 232px; } }
+
+
+/* ======================================================================
+   Back to the previous colours; the problem becomes a compact, left-aligned
+   strip that continues from the hero instead of a centred standalone block.
+   ====================================================================== */
+.instructor.section--yellow { background: var(--ink); }
+.tickets { background: transparent; }
+.tickets .ticket:not(.ticket--featured) { background: var(--ink); }
+.gain.section--light .lead { color: var(--muted-light); }
+
+.hero {
+  min-height: calc(100vh - 56px - 56px);
+  min-height: calc(100svh - 56px - 56px);
+}
+.problem--strip { padding: clamp(32px, 4vw, 52px) 0; border-top: 0; }
+.problem__strip { display: grid; gap: 14px; align-items: center; max-width: none; text-align: left; }
+.problem__head .kicker { margin-bottom: 0.7rem; }
+.problem__head .h2 { margin: 0; font-size: clamp(1.4rem, 1.1vw + 1rem, 1.85rem); max-width: 18em; }
+.problem--strip .lead { margin: 0; color: var(--muted-light); font-size: 1rem; max-width: 30em; }
+@media (min-width: 820px) {
+  .problem__strip { grid-template-columns: 1.15fr 1fr; gap: 56px; }
+  .problem--strip .lead { padding-left: 28px; border-left: 2px solid var(--magenta); }
+}
