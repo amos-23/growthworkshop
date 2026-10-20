@@ -16,8 +16,8 @@ const ADMIN_DIR = path.join(__dirname, 'admin');
 const VOLUME_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || '';
 const DATA_DIR = process.env.DATA_DIR || VOLUME_DIR || path.join(__dirname, 'data');
 const EVENTS_FILE = path.join(DATA_DIR, 'events.jsonl');
-const ADMIN_USER = process.env.ADMIN_USER || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+// Simple shared passkey. Set ADMIN_KEY in the environment to change it without editing code.
+const ADMIN_KEY = process.env.ADMIN_KEY || process.env.ADMIN_PASSWORD || 'growthx';
 const WAT_OFFSET_MS = 60 * 60 * 1000; // West Africa Time is UTC+1 all year
 
 const EVENTS = new Set([
@@ -139,33 +139,49 @@ function readBody(req, limit) {
 
 function sha256(s) { return crypto.createHash('sha256').update(s).digest(); }
 
-function isAuthorised(req) {
-  const header = req.headers.authorization || '';
-  if (!header.startsWith('Basic ')) return false;
-  const decoded = Buffer.from(header.slice(6), 'base64').toString('utf8');
-  const sep = decoded.indexOf(':');
-  if (sep < 0) return false;
-  const userOk = crypto.timingSafeEqual(sha256(decoded.slice(0, sep)), sha256(ADMIN_USER));
-  const passOk = crypto.timingSafeEqual(sha256(decoded.slice(sep + 1)), sha256(ADMIN_PASSWORD));
-  return userOk && passOk;
+function keyMatches(candidate) {
+  return typeof candidate === 'string' && crypto.timingSafeEqual(sha256(candidate), sha256(ADMIN_KEY));
 }
 
+function cookieKey(req) {
+  const m = /(?:^|;\s*)gaw_key=([^;]+)/.exec(req.headers.cookie || '');
+  try { return m ? decodeURIComponent(m[1]) : ''; } catch (e) { return ''; }
+}
+
+const PASSKEY_PAGE = '<!doctype html><html lang="en-GB"><head><meta charset="utf-8">' +
+  '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">' +
+  '<title>Workshop admin</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0b0b;color:#fff;font-family:system-ui,sans-serif}' +
+  'form{width:min(92vw,340px);display:grid;gap:12px}h1{margin:0 0 4px;font-size:1.25rem}input,button{font:inherit;padding:12px;border-radius:4px;border:2px solid #ffd84d}' +
+  'input{background:#1c1c1c;color:#fff}button{background:#ffd84d;color:#0b0b0b;font-weight:700;cursor:pointer}p{margin:0;color:#e66767;min-height:1.2em}</style></head><body>' +
+  '<form method="get" action="/admin/"><h1>Workshop admin</h1><input type="password" name="key" placeholder="Passkey" autocomplete="current-password" autofocus required>' +
+  '<button type="submit">Open dashboard</button><p>__MSG__</p></form></body></html>';
+
 // Returns true when the request may continue; otherwise responds.
-function requireAdmin(req, res) {
+function requireAdmin(req, res, url) {
   const headers = { 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' };
-  if (!ADMIN_PASSWORD) {
-    send(res, 503, 'Admin is disabled. Set the ADMIN_PASSWORD environment variable and redeploy.',
-      Object.assign({ 'Content-Type': 'text/plain; charset=utf-8' }, headers));
+  const isPage = url.pathname === '/admin' || url.pathname.startsWith('/admin/');
+
+  const supplied = url.searchParams.get('key');
+  if (supplied !== null && isPage && req.method === 'GET') {
+    if (keyMatches(supplied)) {
+      const secure = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+      send(res, 303, '', Object.assign({
+        Location: '/admin/',
+        'Set-Cookie': 'gaw_key=' + encodeURIComponent(supplied) + '; Path=/; HttpOnly; SameSite=Strict; Max-Age=31536000' + secure
+      }, headers));
+    } else {
+      send(res, 401, PASSKEY_PAGE.replace('__MSG__', 'Wrong passkey.'), Object.assign({ 'Content-Type': 'text/html; charset=utf-8' }, headers));
+    }
     return false;
   }
-  if (!isAuthorised(req)) {
-    send(res, 401, 'Authentication required.', Object.assign({
-      'Content-Type': 'text/plain; charset=utf-8',
-      'WWW-Authenticate': 'Basic realm="Growth Workshop admin", charset="UTF-8"'
-    }, headers));
-    return false;
+  if (keyMatches(cookieKey(req))) return true;
+
+  if (isPage) {
+    send(res, 401, PASSKEY_PAGE.replace('__MSG__', ''), Object.assign({ 'Content-Type': 'text/html; charset=utf-8' }, headers));
+  } else {
+    send(res, 401, 'Passkey required.', Object.assign({ 'Content-Type': 'text/plain; charset=utf-8' }, headers));
   }
-  return true;
+  return false;
 }
 
 function serveFile(res, root, relPath, extraHeaders) {
@@ -302,7 +318,7 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/healthz') return sendJson(res, 200, { ok: true });
 
     if (pathname === '/api/stats' || pathname === '/api/events.csv' || pathname === '/admin' || pathname.startsWith('/admin/')) {
-      if (!requireAdmin(req, res)) return;
+      if (!requireAdmin(req, res, new URL(req.url, 'http://localhost'))) return;
       if (pathname === '/api/stats') {
         const range = new URL(req.url, 'http://localhost').searchParams.get('range') || '30';
         return sendJson(res, 200, buildStats(['7', '30', '90', 'all'].includes(range) ? range : '30'));

@@ -16,17 +16,15 @@ A static, dependency-free landing page for the **Growth & Acquisition Workshop**
 ## Run locally
 
 ```sh
-ADMIN_PASSWORD=choose-a-password npm start
+npm start
 # site:  http://localhost:3000
-# admin: http://localhost:3000/admin/   (username: admin)
+# admin: http://localhost:3000/admin/?key=growthx
 ```
 
 ## Deploy (Railway)
 
 1. Railway detects `package.json` and runs `npm start`. No build step.
-2. Set these **variables** on the service:
-   - `ADMIN_PASSWORD`: required. Without it `/admin` is disabled.
-   - `ADMIN_USER`: optional, defaults to `admin`.
+2. No variables are required. The admin passkey defaults to `growthx` (see below); set `ADMIN_KEY` to change it without editing code.
 3. **Add a Volume** to the service (any mount path). Events are stored in `events.jsonl` on that volume; without one they are lost on every redeploy. The admin page shows a warning until a volume is attached. `RAILWAY_VOLUME_MOUNT_PATH` is picked up automatically, or set `DATA_DIR` yourself.
 4. Run a single instance (events are held in memory and appended to one file).
 
@@ -40,7 +38,7 @@ The Selar product sells both tickets on that one page, so there is no separate U
 
 ## Analytics and the admin dashboard
 
-The page records events to its own `/api/track` endpoint. They appear at **`/admin/`** (HTTP basic auth) with:
+The page records events to its own `/api/track` endpoint. They appear at **`/admin/`** (passkey) with:
 
 - Visitors, page views, registration clicks and click-through rate
 - A daily trend chart (WAT days) with a table view, and 7 / 30 / 90 day / all-time ranges
@@ -49,6 +47,8 @@ The page records events to its own `/api/track` endpoint. They appear at **`/adm
 - A CSV export of every event (`/api/events.csv`)
 
 **What it counts.** "Registration clicks" are visitors leaving for the Selar page. They are not purchases, so check Selar for sales. A visitor is a browser tab session (stored in `sessionStorage`), so the same person returning in a new tab counts again. No cookies, IP addresses or user agents are stored; only a device type (mobile, tablet or desktop). Known bots, previews and automated browsers are ignored.
+
+**Passkey.** Open `/admin/?key=growthx` once; the browser remembers it for a year. Anyone with the key can view the dashboard. The default key is in `server.js`, and this repository is public, so treat it as a light gate, not strong security. For something stronger, set `ADMIN_KEY` on the host.
 
 **Tag your links** to see where traffic comes from, for example `https://www.growthworkshop.xyz/?utm_source=instagram&utm_medium=bio`.
 
