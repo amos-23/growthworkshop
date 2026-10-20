@@ -997,3 +997,46 @@ body { font-size: clamp(14.5px, 0.25vw + 13.2px, 16px); line-height: 1.7; }
 /* Footer */
 .site-footer { font-size: 0.82rem; }
 .instructor__copy .h2 { margin-bottom: 0.8rem; }
+
+
+/* ======================================================================
+   Hero fits the screen with a scroll cue; top of the page stays dark so the
+   sections flow instead of jumping to a light panel.
+   ====================================================================== */
+.hero {
+  min-height: calc(100vh - 56px - 40px);
+  min-height: calc(100svh - 56px - 40px);
+  display: flex;
+  align-items: center;
+  padding: 32px 0 76px;
+}
+.hero__grid { width: 100%; }
+.scroll-cue {
+  position: absolute; left: 50%; bottom: 14px; z-index: 2;
+  transform: translateX(-50%);
+  display: grid; justify-items: center; gap: 2px;
+  color: rgba(255,255,255,0.7); text-decoration: none;
+  font-size: 0.66rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+}
+.scroll-cue:hover { color: var(--yellow); }
+.scroll-cue svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; animation: cue-bob 1.8s ease-in-out infinite; }
+@keyframes cue-bob { 0%, 100% { transform: translateY(0); opacity: 0.6; } 50% { transform: translateY(5px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .scroll-cue svg { animation: none; } }
+@media (max-height: 720px) and (min-width: 960px) {
+  .hero { padding: 20px 0 64px; }
+  .hero__title { font-size: clamp(1.9rem, 2vw + 1rem, 2.6rem); margin-bottom: 0.9rem; }
+  .hero__lede { margin-bottom: 0.8rem; }
+  .event-facts { margin-bottom: 1.1rem; }
+  .hero__portrait { max-width: 210px; }
+}
+
+/* Dark flow: hero (black) > problem (ink) > experience (black) > gain (ink) > instructor (black) > tickets (ink) */
+.section--ink { background: var(--ink); color: var(--white); }
+.problem.section--ink { border-top: 1px solid rgba(255,255,255,0.08); }
+.problem.section--ink .lead, .gain.section--ink .lead, .problem__inner .lead, .gain__inner .lead { color: #bdbdb8; }
+.problem.section--ink .kicker { color: var(--yellow); }
+.instructor.section--yellow { background: var(--black); }
+.tickets { background: var(--ink); }
+.tickets .ticket:not(.ticket--featured) { background: var(--black); }
+.hero__portrait figcaption { flex-wrap: wrap; row-gap: 2px; }
+@media (max-height: 720px) and (min-width: 960px) { .hero__portrait { max-width: 232px; } }
