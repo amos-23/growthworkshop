@@ -42,7 +42,7 @@
     if (days > 1) el.textContent = days + ' days until the workshop · Sat 7 Nov 2026, 12 PM WAT';
     else if (days === 1) el.textContent = 'Workshop is tomorrow · 12 PM WAT';
     else if (Date.now() < EVENT_START) el.textContent = 'Workshop is today · 12 PM WAT';
-    else el.textContent = 'Workshop held on Sat 7 Nov 2026';
+    else el.textContent = 'Growth & Acquisition Workshop';
   })();
 
   // ---------- Data ----------

@@ -1,6 +1,6 @@
 # Growth & Acquisition Workshop
 
-The public site is now a short "join the list for the next workshop" page. The workshop took place on 7 November 2026; the full sales page is archived in `archive/`.
+The public site is now a short "registration closed, join the list" page. The full sales page (for the workshop planned for 7 November 2026) is archived in `archive/`.
 
 ## Files
 
