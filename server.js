@@ -16,6 +16,7 @@ const ADMIN_DIR = path.join(__dirname, 'admin');
 const VOLUME_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || '';
 const DATA_DIR = process.env.DATA_DIR || VOLUME_DIR || path.join(__dirname, 'data');
 const EVENTS_FILE = path.join(DATA_DIR, 'events.jsonl');
+const WAITLIST_FILE = path.join(DATA_DIR, 'waitlist.jsonl');
 // Simple shared passkey. Set ADMIN_KEY in the environment to change it without editing code.
 const ADMIN_KEY = process.env.ADMIN_KEY || process.env.ADMIN_PASSWORD || 'growthx';
 const WAT_OFFSET_MS = 60 * 60 * 1000; // West Africa Time is UTC+1 all year
@@ -26,7 +27,8 @@ const EVENTS = new Set([
   'standard_access_cta_click',
   'growth_intensive_cta_click',
   'explore_tickets_click',
-  'registration_click'
+  'registration_click',
+  'waitlist_signup'
 ]);
 const TICKETS = new Set(['standard', 'growth_intensive', 'unspecified']);
 const BOT_UA = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|slack|discord|curl|wget|python|headless|lighthouse|pingdom|uptime/i;
@@ -62,6 +64,19 @@ try {
 console.log(`Loaded ${events.length} events from ${EVENTS_FILE}${VOLUME_DIR || process.env.DATA_DIR ? '' : ' (not on a persistent volume)'}`);
 
 const writer = fs.createWriteStream(EVENTS_FILE, { flags: 'a' });
+
+let waitlist = [];
+try {
+  waitlist = fs.readFileSync(WAITLIST_FILE, 'utf8')
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => { try { return JSON.parse(line); } catch (e) { return null; } })
+    .filter(Boolean);
+} catch (err) {
+  if (err.code !== 'ENOENT') console.error('Could not read waitlist file:', err.message);
+}
+console.log(`Loaded ${waitlist.length} waitlist sign-ups from ${WAITLIST_FILE}`);
+const waitlistWriter = fs.createWriteStream(WAITLIST_FILE, { flags: 'a' });
 
 function record(evt) {
   events.push(evt);
@@ -241,6 +256,76 @@ async function handleTrack(req, res) {
   send(res, 204);
 }
 
+// ---------- Waitlist ----------
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const signupHits = new Map();
+function signupLimited(ip) {
+  const now = Date.now();
+  const entry = signupHits.get(ip);
+  if (!entry || now - entry.start > 60000) { signupHits.set(ip, { start: now, count: 1 }); return false; }
+  entry.count += 1;
+  return entry.count > 8;
+}
+setInterval(() => {
+  const cutoff = Date.now() - 60000;
+  for (const [ip, entry] of signupHits) if (entry.start < cutoff) signupHits.delete(ip);
+}, 60000).unref();
+
+function plain(value, max) {
+  return typeof value === 'string' ? value.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max) : '';
+}
+
+async function handleWaitlistSignup(req, res) {
+  if (signupLimited(clientIp(req))) return sendJson(res, 429, { ok: false });
+  let body;
+  try { body = JSON.parse(await readBody(req, 4096)); } catch (e) { return sendJson(res, 400, { ok: false }); }
+  if (!body || typeof body !== 'object') return sendJson(res, 400, { ok: false });
+
+  // Hidden field only bots fill in: pretend success, store nothing.
+  if (body.website) return sendJson(res, 200, { ok: true });
+
+  const name = plain(body.name, 80);
+  const email = plain(body.email, 120).toLowerCase();
+  if (!name || !EMAIL_RE.test(email)) return sendJson(res, 400, { ok: false });
+
+  let whatsapp = plain(body.whatsapp, 30).replace(/[^0-9+()\-\s]/g, '').trim();
+  if (whatsapp.replace(/\D/g, '').length < 7) whatsapp = '';
+
+  // Same email twice is treated as already signed up (no duplicate, nothing revealed).
+  if (!waitlist.some((entry) => entry.email === email)) {
+    const refHost = hostOf(body.ref);
+    const entry = {
+      t: Date.now(),
+      name,
+      email,
+      whatsapp: whatsapp || undefined,
+      ref: refHost || undefined,
+      us: clean(body.utm_source, /^[\w.\- ]{1,64}$/, 64),
+      um: clean(body.utm_medium, /^[\w.\- ]{1,64}$/, 64),
+      uc: clean(body.utm_campaign, /^[\w.\- ]{1,64}$/, 64)
+    };
+    waitlist.push(entry);
+    waitlistWriter.write(JSON.stringify(entry) + '\n');
+  }
+  sendJson(res, 200, { ok: true });
+}
+
+// Spreadsheet formulas in user input: prefix risky cells with an apostrophe.
+function csvCell(value) {
+  if (value == null) return '';
+  let v = String(value);
+  // Phone numbers (+234 801…) are fine; a leading + or - followed by anything else could be a formula.
+  if (/^[=@\t\r]/.test(v) || /^[+-](?![0-9\s()\-]*$)/.test(v)) v = "'" + v;
+  return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+
+function waitlistCsv() {
+  const cols = ['signed_up_utc', 'name', 'email', 'whatsapp', 'referrer', 'utm_source', 'utm_medium', 'utm_campaign'];
+  const rows = waitlist.map((e) => [new Date(e.t).toISOString(), e.name, e.email, e.whatsapp, e.ref, e.us, e.um, e.uc].map(csvCell).join(','));
+  return [cols.join(',')].concat(rows).join('\n') + '\n';
+}
+
 // ---------- Stats ----------
 
 function watDay(t) { return new Date(t + WAT_OFFSET_MS).toISOString().slice(0, 10); }
@@ -324,13 +409,25 @@ const server = http.createServer(async (req, res) => {
       return await handleTrack(req, res);
     }
 
+    if (pathname === '/api/waitlist' && req.method === 'POST') return await handleWaitlistSignup(req, res);
+
     if (pathname === '/healthz') return sendJson(res, 200, { ok: true });
 
-    if (pathname === '/api/stats' || pathname === '/api/events.csv' || pathname === '/admin' || pathname.startsWith('/admin/')) {
+    if (pathname === '/api/stats' || pathname === '/api/events.csv' || pathname === '/api/waitlist' || pathname === '/api/waitlist.csv' || pathname === '/admin' || pathname.startsWith('/admin/')) {
       if (!requireAdmin(req, res, new URL(req.url, 'http://localhost'))) return;
       if (pathname === '/api/stats') {
         const range = new URL(req.url, 'http://localhost').searchParams.get('range') || '30';
         return sendJson(res, 200, buildStats(['7', '30', '90', 'all'].includes(range) ? range : '30'));
+      }
+      if (pathname === '/api/waitlist') {
+        return sendJson(res, 200, { count: waitlist.length, entries: waitlist.slice().reverse() });
+      }
+      if (pathname === '/api/waitlist.csv') {
+        return send(res, 200, waitlistCsv(), {
+          'Content-Type': 'text/csv; charset=utf-8',
+          'Content-Disposition': 'attachment; filename="growth-workshop-waitlist.csv"',
+          'Cache-Control': 'no-store'
+        });
       }
       if (pathname === '/api/events.csv') {
         return send(res, 200, eventsCsv(), {
@@ -356,6 +453,7 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 function shutdown() {
   server.close();
+  waitlistWriter.end();
   writer.end(() => process.exit(0));
 }
 process.on('SIGTERM', shutdown);

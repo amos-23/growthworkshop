@@ -1073,3 +1073,33 @@ body { font-size: clamp(14.5px, 0.25vw + 13.2px, 16px); line-height: 1.7; }
 .gain__list span { font-family: var(--font-display); font-weight: 700; color: var(--magenta-deep); }
 @media (min-width: 720px) { .gain__list { grid-template-columns: repeat(3, 1fr); } .gain__list li { flex-direction: column; gap: 6px; } }
 .tickets .section-head .lead { color: #bdbdb8; margin: 0.4rem auto 0; max-width: 34em; }
+
+
+/* ======================================================================
+   Waitlist page
+   ====================================================================== */
+.waitlist-page .site-header__inner { min-height: 56px; }
+.wl { position: relative; overflow: hidden; min-height: calc(100vh - 56px - 92px); min-height: calc(100svh - 56px - 92px); display: flex; align-items: center; padding: 48px 0 64px; }
+.wl__inner { position: relative; z-index: 1; max-width: 640px; }
+.wl__title { font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 2.4vw + 1.05rem, 3rem); line-height: 1.08; text-transform: uppercase; margin: 0 0 1.1rem; text-wrap: balance; }
+.wl__title mark { background: var(--yellow); color: var(--black); padding: 0 0.08em; display: inline-block; line-height: 0.92; }
+.wl__lede { max-width: 32em; color: #d4d4d2; margin: 0 0 1.8rem; }
+.wl__form { display: grid; gap: 14px; max-width: 460px; }
+.field { display: grid; gap: 6px; }
+.field label { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em; color: #e6e6e2; }
+.field label span { font-weight: 400; color: var(--muted-dark); }
+.field input { font: inherit; font-size: 1rem; color: var(--white); background: var(--ink); border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius); padding: 12px 14px; min-height: 46px; }
+.field input::placeholder { color: #8c8c86; }
+.field input:focus { outline: 2px solid var(--yellow); outline-offset: 1px; border-color: var(--yellow); }
+.field--hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.wl__form .btn { justify-self: start; margin-top: 4px; }
+.wl__form .btn:disabled { opacity: 0.6; cursor: progress; }
+.wl__status { min-height: 1.3em; margin: 0; font-size: 0.9rem; color: #ff8fa8; }
+.wl__privacy { margin: 0; font-size: 0.8rem; color: var(--muted-dark); }
+.wl__done { max-width: 460px; padding: 22px 24px; border: 1px solid var(--yellow); }
+.wl__done[hidden] { display: none; }
+.wl__done h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.5rem; color: var(--yellow); margin: 0 0 6px; text-transform: none; }
+.wl__done h2:focus { outline: none; }
+.wl__done p { margin: 0; color: #d4d4d2; }
+@media (max-width: 479px) { .wl__form .btn { justify-self: stretch; } }
+.wl__form[hidden] { display: none; }

@@ -344,6 +344,35 @@
     resizeTimer = setTimeout(function () { if (latest) renderTrend(latest.daily); }, 150);
   });
 
+  // ---------- Waitlist ----------
+  var dateTimeFmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+  function loadWaitlist() {
+    fetch('/api/waitlist', { credentials: 'same-origin', cache: 'no-store' })
+      .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+      .then(function (data) {
+        var sub = document.getElementById('wl-sub');
+        var wrap = document.getElementById('wl-wrap');
+        var empty = document.getElementById('wl-empty');
+        var body = document.getElementById('wl-body');
+        sub.textContent = numberFmt.format(data.count) + (data.count === 1 ? ' person has' : ' people have') + ' joined the list';
+        body.textContent = '';
+        wrap.hidden = !data.count;
+        empty.hidden = data.count > 0;
+        data.entries.forEach(function (e) {
+          var tr = document.createElement('tr');
+          [e.name, e.email, e.whatsapp || '', e.us || e.ref || 'Direct', dateTimeFmt.format(new Date(e.t))].forEach(function (v) {
+            var td = document.createElement('td');
+            td.textContent = v;
+            tr.appendChild(td);
+          });
+          body.appendChild(tr);
+        });
+      })
+      .catch(function () { document.getElementById('wl-sub').textContent = 'Could not load the waitlist.'; });
+  }
+
   load();
-  setInterval(function () { if (!document.hidden) load(); }, 60000);
+  loadWaitlist();
+  setInterval(function () { if (!document.hidden) { load(); loadWaitlist(); } }, 60000);
 })();

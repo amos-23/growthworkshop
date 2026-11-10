@@ -161,3 +161,6 @@ main { padding: 24px 0 48px; }
 @media (prefers-reduced-motion: reduce) {
   #content { transition: none; }
 }
+
+.wl-table th, .wl-table td { text-align: left; white-space: nowrap; }
+.wl-table td:nth-child(2) { white-space: normal; word-break: break-all; }
